@@ -20,6 +20,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.entity import DeviceInfo
 
 from .const import DOMAIN
+from .device import get_ups_device_info, get_agent_device_info
 
 @dataclass(frozen=True)
 class UnityDPSensorEntityDescription(SensorEntityDescription):
@@ -153,18 +154,6 @@ SENSORS: tuple[UnityDPSensorEntityDescription, ...] = (
         value_fn=lambda data: data["agent"]["status"].get("firmware_version"),
         is_agent=True,
     ),
-    UnityDPSensorEntityDescription(
-        key="agent_firmware_label",
-        name="Agent Firmware Label",
-        value_fn=lambda data: data["agent"]["status"].get("firmware_label"),
-        is_agent=True,
-    ),
-    UnityDPSensorEntityDescription(
-        key="agent_date_time",
-        name="Agent Date Time",
-        value_fn=lambda data: data["agent"]["status"].get("date_time"),
-        is_agent=True,
-    ),
 )
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -196,28 +185,16 @@ class UnityDPSensor(CoordinatorEntity, SensorEntity):
         """Initialise the sensor with the coordinator and description."""
         super().__init__(coordinator)
         self.entity_description = description
+        self._entry = entry
         self._attr_name = f"UPS {description.name}"
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
-        
-        ups_device = DeviceInfo(
-            identifiers={(DOMAIN, f"{entry.entry_id}_ups")},
-            name="Unity DP UPS",
-            manufacturer="Vertiv",
-            model="Unity DP",
-            via_device=(DOMAIN, f"{entry.entry_id}_agent"),
-        )
-        
-        agent_device = DeviceInfo(
-            identifiers={(DOMAIN, f"{entry.entry_id}_agent")},
-            name="Vertiv™ Liebert© IntelliSlot™ Unity Card",
-            manufacturer="Vertiv",
-            model="IntelliSlot Unity",
-        )
 
-        if description.is_agent:
-            self._attr_device_info = agent_device
-        else:
-            self._attr_device_info = ups_device
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device information about this entity."""
+        if self.entity_description.is_agent:
+            return get_agent_device_info(self._entry.entry_id, self.coordinator.data)
+        return get_ups_device_info(self._entry.entry_id, self.coordinator.data)
 
     @property
     def native_value(self):

@@ -22,13 +22,24 @@ class UnityDPConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             username = user_input[CONF_USERNAME]
             password = user_input[CONF_PASSWORD]
 
-            # Validate the connection
             ups = UPSLibrary(host, username, password)
-            # Since UPSLibrary uses requests, we should run it in an executor
-            success = await self.hass.async_add_executor_job(ups.login)
 
-            if success:
-                return self.async_create_entry(title=f"{ups.system.status.model_number} via {ups.agent.status.model} at {host}", data=user_input)
+            def _validate_and_get_info(ups):
+                if ups.login():
+                    return {
+                        "model": ups.system.status.model_number,
+                        "agent_model": ups.agent.status.model,
+                    }
+                return None
+
+            info = await self.hass.async_add_executor_job(_validate_and_get_info, ups)
+
+            if info:
+                model = info.get('model')
+                title = f"{model} at {host}"
+                if not model or model in ("None", "--"):
+                    title = f"Unity DP UPS at {host}"
+                return self.async_create_entry(title=title, data=user_input)
             else:
                 errors["base"] = "cannot_connect"
 
