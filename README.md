@@ -31,7 +31,7 @@ This integration communicates with Unity DP cards installed in compatible UPS sy
 2. Go to "Integrations"
 3. Click the three dots in the top right
 4. Select "Custom repositories"
-5. Add `https://gitlab.com/codepark-ca/home-assistant-unity-dp-ups-client` as an integration
+5. Add the GitHub mirror `https://github.com/CodePark-CA/home-assistant-unity-dp-ups-client` as an integration
 6. Click "Install"
 7. Restart Home Assistant
 
