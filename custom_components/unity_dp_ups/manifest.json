@@ -2,10 +2,11 @@
   "domain": "unity_dp_ups",
   "name": "Unity DP UPS",
   "documentation": "https://gitlab.com/codepark-ca/home-assistant-unity-dp-ups-client",
+  "issue_tracker": "https://gitlab.com/codepark-ca/home-assistant-unity-dp-ups-client/-/issues",
   "dependencies": [],
   "codeowners": ["@Stone-Monarch", "@StoneMonarch"],
   "version": "0.1.0",
   "config_flow": true,
   "iot_class": "local_polling",
-  "requirements": ["unity-dp @ git+https://gitlab.com/codepark-ca/unity-dp-ups-client.git@v0.1.0"]
+  "requirements": ["unity-dp @ git+https://gitlab.com/codepark-ca/unity-dp-ups-client.git@v0.2.0"]
 }
