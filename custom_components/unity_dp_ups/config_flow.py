@@ -28,7 +28,7 @@ class UnityDPConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             success = await self.hass.async_add_executor_job(ups.login)
 
             if success:
-                return self.async_create_entry(title=f"UPS at {host}", data=user_input)
+                return self.async_create_entry(title=f"{ups.system.status.model_number} via {ups.agent.status.model} at {host}", data=user_input)
             else:
                 errors["base"] = "cannot_connect"
 
