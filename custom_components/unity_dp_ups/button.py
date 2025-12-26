@@ -23,10 +23,11 @@ class BatteryTestButton(ButtonEntity):
         self._attr_unique_id = f"{entry.entry_id}_manual_battery_test"
         self._attr_icon = "mdi:battery-check"
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, entry.entry_id)},
+            identifiers={(DOMAIN, f"{entry.entry_id}_ups")},
             name="Unity DP UPS",
             manufacturer="Vertiv",
             model="Unity DP",
+            via_device=(DOMAIN, f"{entry.entry_id}_agent"),
         )
 
     async def async_press(self) -> None:

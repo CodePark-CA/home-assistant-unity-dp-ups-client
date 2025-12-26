@@ -21,10 +21,11 @@ from homeassistant.helpers.entity import DeviceInfo
 
 from .const import DOMAIN
 
-@dataclass
+@dataclass(frozen=True)
 class UnityDPSensorEntityDescription(SensorEntityDescription):
     """Class describing Unity DP UPS sensor entities."""
     value_fn: Callable[[Any], Any] = None
+    is_agent: bool = False
 
 SENSORS: tuple[UnityDPSensorEntityDescription, ...] = (
     UnityDPSensorEntityDescription(
@@ -140,6 +141,30 @@ SENSORS: tuple[UnityDPSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data["output"]["status"].get("va"),
     ),
+    UnityDPSensorEntityDescription(
+        key="agent_model",
+        name="Agent Model",
+        value_fn=lambda data: data["agent"]["status"].get("model"),
+        is_agent=True,
+    ),
+    UnityDPSensorEntityDescription(
+        key="agent_firmware_version",
+        name="Agent Firmware Version",
+        value_fn=lambda data: data["agent"]["status"].get("firmware_version"),
+        is_agent=True,
+    ),
+    UnityDPSensorEntityDescription(
+        key="agent_firmware_label",
+        name="Agent Firmware Label",
+        value_fn=lambda data: data["agent"]["status"].get("firmware_label"),
+        is_agent=True,
+    ),
+    UnityDPSensorEntityDescription(
+        key="agent_date_time",
+        name="Agent Date Time",
+        value_fn=lambda data: data["agent"]["status"].get("date_time"),
+        is_agent=True,
+    ),
 )
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -168,17 +193,31 @@ class UnityDPSensor(CoordinatorEntity, SensorEntity):
         entry,
         description: UnityDPSensorEntityDescription,
     ):
-        """Initialize the sensor with the coordinator and description."""
+        """Initialise the sensor with the coordinator and description."""
         super().__init__(coordinator)
         self.entity_description = description
         self._attr_name = f"UPS {description.name}"
         self._attr_unique_id = f"{entry.entry_id}_{description.key}"
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, entry.entry_id)},
+        
+        ups_device = DeviceInfo(
+            identifiers={(DOMAIN, f"{entry.entry_id}_ups")},
             name="Unity DP UPS",
             manufacturer="Vertiv",
             model="Unity DP",
+            via_device=(DOMAIN, f"{entry.entry_id}_agent"),
         )
+        
+        agent_device = DeviceInfo(
+            identifiers={(DOMAIN, f"{entry.entry_id}_agent")},
+            name="Vertiv™ Liebert© IntelliSlot™ Unity Card",
+            manufacturer="Vertiv",
+            model="IntelliSlot Unity",
+        )
+
+        if description.is_agent:
+            self._attr_device_info = agent_device
+        else:
+            self._attr_device_info = ups_device
 
     @property
     def native_value(self):
