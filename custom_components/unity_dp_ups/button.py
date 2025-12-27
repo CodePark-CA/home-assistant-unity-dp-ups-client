@@ -1,7 +1,7 @@
 from homeassistant.components.button import ButtonEntity
 from homeassistant.helpers.entity import DeviceInfo
 from .const import DOMAIN
-from .device import get_ups_device_info
+from .device_info import get_ups_device_info
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Set up UPS buttons based on a config entry."""

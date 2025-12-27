@@ -15,6 +15,13 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BUTTON]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Unity DP UPS from a config entry."""
+    # Fix entry title if it contains the old format or "None"
+    if "None" in entry.title or "via" in entry.title:
+        host = entry.data.get(CONF_HOST, "")
+        # Try to get model from current data if available, but for now just use a better default
+        new_title = f"Unity DP UPS at {host}"
+        hass.config_entries.async_update_entry(entry, title=new_title)
+
     host = entry.data[CONF_HOST]
     username = entry.data[CONF_USERNAME]
     password = entry.data[CONF_PASSWORD]

@@ -36,9 +36,10 @@ class UnityDPConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if info:
                 model = info.get('model')
-                title = f"{model} at {host}"
-                if not model or model in ("None", "--"):
+                if not model or str(model).strip() in ("None", "--", ""):
                     title = f"Unity DP UPS at {host}"
+                else:
+                    title = f"{model} at {host}"
                 return self.async_create_entry(title=title, data=user_input)
             else:
                 errors["base"] = "cannot_connect"

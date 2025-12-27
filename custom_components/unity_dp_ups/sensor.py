@@ -20,7 +20,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.entity import DeviceInfo
 
 from .const import DOMAIN
-from .device import get_ups_device_info, get_agent_device_info
+from .device_info import get_ups_device_info, get_agent_device_info
 
 @dataclass(frozen=True)
 class UnityDPSensorEntityDescription(SensorEntityDescription):
