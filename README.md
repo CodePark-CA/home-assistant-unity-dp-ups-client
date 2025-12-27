@@ -1,16 +1,15 @@
-# Unity DP UPS - Home Assistant Integration
+<img src="https://gitlab.com/codepark-ca/home-assistant-unity-dp-ups-client/-/raw/master/images/unity_dp_ups_banner.svg?ref_type=heads" alt="Unity DP UPS Banner" title="Unity DP UPS Home Assistant Integration" align="center"/>
+
+# IS Unity DP UPS - Home Assistant Integration 
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
 Home Assistant custom component for monitoring and controlling UPS units equipped with Unity DP management cards (IS-UNITY-DP).
 
 ## Compatibility
 
-This integration communicates with Unity DP cards installed in compatible UPS systems.
-
-**Tested with:**
-- Card Model: IS-UNITY-DP
-- Card Firmware: 8.4.3.1  
-- UPS Model: GXT3-1500RT120
-- UPS Firmware: U027D024
+| Card Model  | Card Firmware | UPS Model      | UPS Firmware |
+|-------------|---------------|----------------|--------------|
+| IS-UNITY-DP | 8.4.3.1       | GXT3-1500RT120 | U027D024     |
 
 ## Features
 
@@ -41,6 +40,8 @@ This integration communicates with Unity DP cards installed in compatible UPS sy
 
 ## Configuration
 
+**Note:** It is recommended to use a dedicated user account for Home Assistant as sometimes the account gets locked out for a period of time.
+
 1. Go to **Settings** → **Devices & Services**
 2. Click **Add Integration**
 3. Search for "Unity DP UPS"
@@ -48,11 +49,6 @@ This integration communicates with Unity DP cards installed in compatible UPS sy
    - **Host:** IP address (e.g., `http://192.168.1.100`)
    - **Username:** Web interface username
    - **Password:** Web interface password
-
-## Requirements
-
-- UPS with IS-UNITY-DP management card
-- Network access to the card's web interface
 
 ## Disclaimer
 
